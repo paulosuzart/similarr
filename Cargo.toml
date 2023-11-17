@@ -1,0 +1,13 @@
+[package]
+name = "similarr"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.6.20"
+shuttle-axum = "0.33.0"
+shuttle-runtime = "0.33.0"
+tokio = "1.28.2"
+tracing = "0.1.40"
+regex = "1.10.2"
+serde = { version = "1.0.192", features = ["derive"] }
