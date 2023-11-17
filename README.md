@@ -13,14 +13,14 @@ The project is available at https://similarr.shuttleapp.rs.
 You can then call the `/compare` endpoint providing the strings `a` and `b` for comparison like this:
 
 ```bash
-curl https://similarr.shuttleapp.rs/compare\?a\=a1a\&b\=a22
+curl https://similarr.shuttleapp.rs/compare\?a\=house\&b\=ho2e
 
 {
-  "a": "a1a",
-  "b": "a22",
-  "expanded_a": "a*a",
-  "expanded_b": "a**********************",
-  "result": false
+  "a": "house",
+  "b": "ho2e",
+  "expanded_a": "house",
+  "expanded_b": "ho**e",
+  "result": true
 }
 ```
 
