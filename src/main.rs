@@ -12,16 +12,20 @@ struct ComparisonRequest {
 
 #[derive(Debug, Serialize)]
 struct ComparisonResponse {
-    input: Vec<String>,
-    expanded: Vec<String>,
+    a: String,
+    b: String,
+    expanded_a: String,
+    expanded_b: String,
     result: bool,
 }
 
 async fn compare(request: Query<ComparisonRequest>) -> Json<ComparisonResponse> {
     let result = similarr::compare(&request.a, &request.b);
     Json(ComparisonResponse {
-        input: vec![request.a.to_string(), request.b.to_string()],
-        expanded: result.expanded,
+        a: request.a.to_string(),
+        b: request.b.to_string(),
+        expanded_a: result.expanded_a,
+        expanded_b: result.expanded_b,
         result: result.result,
     })
 }

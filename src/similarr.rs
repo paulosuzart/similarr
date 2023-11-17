@@ -5,7 +5,8 @@ use regex::{Captures, Regex, Replacer};
 struct NameSwapper;
 
 pub struct ComparisonResult {
-    pub expanded: Vec<String>,
+    pub expanded_a: String,
+    pub expanded_b: String,
     pub result: bool,
 }
 
@@ -29,7 +30,8 @@ pub fn compare(text_a: &str, text_b: &str) -> ComparisonResult {
 
     let result = similarr(&expanded_a, &expanded_b);
     ComparisonResult {
-        expanded: vec![expanded_a, expanded_b],
+        expanded_a,
+        expanded_b,
         result
     }
 }
