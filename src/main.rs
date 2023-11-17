@@ -8,9 +8,9 @@ use validator::{Validate, ValidationError};
 mod similarr;
 
 fn valid_numbers(s: &String) -> Result<(), ValidationError> {
-    let regex = Regex::new(r"\d{3,}+").unwrap();
+    let regex = Regex::new(r"([3-9]\d+|\d{3,})").unwrap();
     if regex.is_match(s) {
-        Err(ValidationError::new("Strings support expansion up to 20 characters"))
+        Err(ValidationError::new("Strings support expansion up to 29 characters"))
     } else {
         Ok(())
     }
