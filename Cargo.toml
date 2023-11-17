@@ -11,3 +11,5 @@ tokio = "1.28.2"
 tracing = "0.1.40"
 regex = "1.10.2"
 serde = { version = "1.0.192", features = ["derive"] }
+validator = { version = "0.16.1", features = ["derive"] }
+axum-valid = "0.11.0"

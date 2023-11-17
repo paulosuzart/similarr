@@ -1,13 +1,29 @@
 use axum::{Json, Router, routing::get};
 use axum::extract::Query;
+use axum_valid::Valid;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
+use validator::{Validate, ValidationError};
 
 mod similarr;
 
-#[derive(Deserialize)]
+fn valid_numbers(s: &String) -> Result<(), ValidationError> {
+    let regex = Regex::new(r"\d{3,}+").unwrap();
+    if regex.is_match(s) {
+        Err(ValidationError::new("Strings support expansion up to 20 characters"))
+    } else {
+        Ok(())
+    }
+}
+
+#[derive(Deserialize, Validate, Debug)]
 struct ComparisonRequest {
+    #[validate(length(max = 50))]
+    #[validate(custom(function = "valid_numbers"))]
     a: String,
-    b: String
+    #[validate(custom(function = "valid_numbers"))]
+    #[validate(length(max = 50))]
+    b: String,
 }
 
 #[derive(Debug, Serialize)]
@@ -19,7 +35,7 @@ struct ComparisonResponse {
     result: bool,
 }
 
-async fn compare(request: Query<ComparisonRequest>) -> Json<ComparisonResponse> {
+async fn compare(request: Valid<Query<ComparisonRequest>>) -> Json<ComparisonResponse> {
     let result = similarr::compare(&request.a, &request.b);
     Json(ComparisonResponse {
         a: request.a.to_string(),
