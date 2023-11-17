@@ -28,7 +28,7 @@ struct ComparisonRequest {
     b: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 struct ComparisonResponse {
     a: String,
     b: String,
@@ -52,9 +52,56 @@ async fn handler_404() -> impl IntoResponse {
     (StatusCode::NOT_FOUND, "nothing to see here")
 }
 
+fn init_router() -> Router {
+    Router::new().route("/compare", get(compare))
+        .fallback(handler_404)
+}
+
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
-    let router = Router::new().route("/compare", get(compare))
-        .fallback(handler_404);
-    Ok(router.into())
+    Ok(init_router().into())
+}
+
+
+#[cfg(test)]
+mod test {
+    use axum_test::{TestServer, TestServerConfig};
+    use super::*;
+
+    #[tokio::test]
+    async fn black_box_truthy() {
+        let app = init_router();
+        let config = TestServerConfig::builder()
+            .default_content_type("application/json")
+            .build();
+        let server = TestServer::new_with_config(app, config).unwrap();
+
+        let response = server.get("/compare")
+            .add_query_param("a", "casa")
+            .add_query_param("b", "ca1a").await;
+
+        response.assert_json(&ComparisonResponse {
+            a: "casa".to_string(),
+            b: "ca1a".to_string(),
+            expanded_a: "casa".to_string(),
+            expanded_b: "ca*a".to_string(),
+            result: true,
+        });
+    }
+
+    #[tokio::test]
+    async fn black_box_false() {
+        let app = init_router();
+        let config = TestServerConfig::builder()
+            .default_content_type("application/json")
+            .build();
+        let server = TestServer::new_with_config(app, config).unwrap();
+
+        let response = server.get("/compare")
+            .add_query_param("a", "mangos")
+            .add_query_param("b", "m1n1o").await;
+
+        let payload : ComparisonResponse = response.json();
+        assert!(!payload.result);
+    }
 }
