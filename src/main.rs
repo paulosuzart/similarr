@@ -1,5 +1,7 @@
 use axum::{Json, Router, routing::get};
 use axum::extract::Query;
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
 use axum_valid::Valid;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -46,9 +48,13 @@ async fn compare(request: Valid<Query<ComparisonRequest>>) -> Json<ComparisonRes
     })
 }
 
+async fn handler_404() -> impl IntoResponse {
+    (StatusCode::NOT_FOUND, "nothing to see here")
+}
 
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
-    let router = Router::new().route("/compare", get(compare));
+    let router = Router::new().route("/compare", get(compare))
+        .fallback(handler_404);
     Ok(router.into())
 }
