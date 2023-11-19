@@ -65,6 +65,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
 
 #[cfg(test)]
 mod test {
+    use std::iter;
     use axum_test::{TestServer, TestServerConfig};
     use super::*;
 
@@ -103,5 +104,35 @@ mod test {
 
         let payload : ComparisonResponse = response.json();
         assert!(!payload.result);
+    }
+
+    #[tokio::test]
+    async fn black_box_invalid_notation() {
+        let app = init_router();
+        let config = TestServerConfig::builder()
+            .default_content_type("application/json")
+            .build();
+        let server = TestServer::new_with_config(app, config).unwrap();
+
+        let response = server.get("/compare")
+            .add_query_param("a", "mangos")
+            .add_query_param("b", "mang44s").await;
+        response.assert_status(StatusCode::BAD_REQUEST);
+    }
+
+    #[tokio::test]
+    async fn black_box_invalid_size() {
+        let app = init_router();
+        let config = TestServerConfig::builder()
+            .default_content_type("application/json")
+            .build();
+        let server = TestServer::new_with_config(app, config).unwrap();
+
+        let mut string_a : String = "mango".to_string();
+        string_a.extend(iter::repeat("s").take(45));
+        let response = server.get("/compare")
+            .add_query_param("a", string_a)
+            .add_query_param("b", "mang44s").await;
+        response.assert_status(StatusCode::BAD_REQUEST);
     }
 }
