@@ -135,4 +135,16 @@ mod test {
             .add_query_param("b", "mang44s").await;
         response.assert_status(StatusCode::BAD_REQUEST);
     }
+
+    #[tokio::test]
+    async fn test_not_found() {
+        let app = init_router();
+        let config = TestServerConfig::builder()
+            .default_content_type("application/json")
+            .build();
+        let server = TestServer::new_with_config(app, config).unwrap();
+
+        let response = server.get("/").await;
+        response.assert_status(StatusCode::NOT_FOUND);
+    }
 }
