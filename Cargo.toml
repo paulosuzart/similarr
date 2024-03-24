@@ -1,20 +1,20 @@
 [package]
 name = "similarr"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 [dependencies]
-axum = "0.6.20"
-shuttle-axum = "0.33.0"
-shuttle-runtime = "0.33.0"
-tokio = "1.28.2"
+axum = "0.7.4"
+shuttle-axum = "0.42.0"
+shuttle-runtime = "0.42.0"
+tokio = "1.36.0"
 tracing = "0.1.40"
-regex = "1.10.2"
-serde = { version = "1.0.192", features = ["derive"] }
-validator = { version = "0.16.1", features = ["derive"] }
-axum-valid = "0.11.0"
+regex = "1.10.4"
+serde = { version = "1.0.197", features = ["derive"] }
+validator = { version = "0.17.0", features = ["derive"] }
+axum-valid = "0.17.0"
 
 
 [dev-dependencies]
-axum-test = "13.3.0"
-parameterized = "1.1.0"
+axum-test = "14.4.0"
+parameterized = "2.0.0"

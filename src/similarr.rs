@@ -4,6 +4,8 @@ use regex::{Captures, Regex, Replacer};
 
 struct NameSwapper;
 
+const PLACEHOLDER: char = '*';
+
 pub struct ComparisonResult {
     pub expanded_a: String,
     pub expanded_b: String,
@@ -13,7 +15,7 @@ pub struct ComparisonResult {
 impl Replacer for NameSwapper {
     fn replace_append(&mut self, caps: &Captures<'_>, dst: &mut String) {
         let iterations = caps[1].parse::<i32>().unwrap();
-        let i = iter::repeat("*")
+        let i = iter::repeat(PLACEHOLDER)
             .take(iterations as usize);
         dst.extend(i);
     }
@@ -45,7 +47,7 @@ fn similarr(text_a: &str, text_b: &str) -> bool {
 
     for a in text_a.chars().zip(text_b.chars()) {
         match a {
-            ('*', _) | (_, '*') => (),
+            (PLACEHOLDER, _) | (_, PLACEHOLDER) => (),
             (a, b)  if a != b => return false,
             _ => ()
         }
